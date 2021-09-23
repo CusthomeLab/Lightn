@@ -1,5 +1,5 @@
 {
-  "name": "mod-optim",
+  "name": "crush",
   "version": "0.1.0",
   "private": true,
   "author": "Custhome",
@@ -25,9 +25,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron:start": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electronmon .\"",
-    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
-    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js"
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electronmon .\"",
+    "electron:pack:test": "yarn build && DEBUG=electron-builder electron-builder --dir",
+    "electron:pack": "yarn build && electron-builder --x64 --macos --win",
+    "electron:release": "yarn build && electron-builder --x64 --macos --win --publish onTag"
   },
   "eslintConfig": {
     "extends": [
@@ -46,23 +47,5 @@
     "electron-builder": "^22.11.7",
     "electronmon": "^2.0.2",
     "wait-on": "^6.0.0"
-  },
-  "build": {
-    "asar": false,
-    "appId": "com.electron.myapp",
-    "productName": "mod-optim",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "public"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "win": {
-      "target": "nsis"
-    }
   }
 }

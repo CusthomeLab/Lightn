@@ -1,10 +1,10 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, dialog, ipcMain} = require('electron')
+const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const path = require('path')
 const isDev = require("electron-is-dev");
 const walk = require('walk');
-const {ImagePool} = require('@squoosh/lib');
-const {cpus} = require('os');
+const { ImagePool } = require('@squoosh/lib');
+const { cpus } = require('os');
 const fs = require('fs');
 const url = require('url')
 
@@ -15,8 +15,12 @@ let total = 0
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
+
+        width: 1000,
         height: 600,
+        titleBarStyle: 'hiddenInset',
+        title: "Crush",
+        icon: path.join(__dirname, '../public/icons/macOS/Icon.icns'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -40,6 +44,51 @@ function createWindow() {
         mainWindow.webContents.openDevTools()
     }
 }
+
+// --------------------------------------
+//  Système de mise à jour automatique
+// --------------------------------------
+// Logs pour la mise à jour automatique
+autoUpdater.logger = log
+autoUpdater.logger.transports.file.level = 'info'
+log.info('App starting...')
+
+function sendStatusToWindow(text) {
+    log.info(text)
+    win.webContents.send('message', text)
+}
+
+autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...')
+})
+autoUpdater.on('update-available', (ev, info) => {
+    sendStatusToWindow('Update available.')
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+    sendStatusToWindow('Update not available.')
+})
+autoUpdater.on('error', (ev, err) => {
+    sendStatusToWindow('Error in auto-updater. ' + err)
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+    let log_message = 'Download speed: ' + progressObj.bytesPerSecond
+    log_message = log_message + ' - Downloaded ' + Math.round(progressObj.percent) + '%'
+    log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    sendStatusToWindow(log_message)
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+    sendStatusToWindow('Update downloaded')
+})
+
+//-------------------------------------------------------------------
+// Auto updates - Option 1 - Simplest version
+//
+// This will immediately download an update, then install when the
+// app quits.
+//-------------------------------------------------------------------
+app.on('ready', function () {
+    autoUpdater.checkForUpdatesAndNotify()
+})
 
 
 
@@ -120,7 +169,7 @@ ipcMain.on('app:input-dir-clicked', async (event, arg) => {
     mainWindow.webContents.send('electron:reset')
 
     const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openDirectory']
+        properties: ['openDirectory']
     })
     let inputDir = result.filePaths[0]
     let walker = walk.walk(inputDir);
@@ -179,7 +228,7 @@ ipcMain.on('app:export-dir-clicked', async (event, config) => {
         let relativePath = path.join(root.replace(importDir, ''), fileStats.name)
         let targetPath = path.join(exportDir, relativePath)
         let targetDir = path.dirname(targetPath)
-        fs.mkdirSync(targetDir, {recursive: true})
+        fs.mkdirSync(targetDir, { recursive: true })
         let picture = pictures.find(picture => picture.path === path.join(root, fileStats.name))
         if (picture && !picture.ignore) {
             let pictureInfo = await compressAndResize(absolutePath, picture.newWidth, picture.newHeight, picture.quality, picture.ignore)

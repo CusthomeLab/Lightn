@@ -1,0 +1,16 @@
+appId: com.custhome.app
+productName: Crush
+copyright: Copyright © 2021 ${author}
+directories:
+  output: release/${version}
+mac:
+  category: public.app-category.productivity
+  icon: build/icons/macOS/Icon.icns
+  darkModeSupport: true
+  target:
+    - dmg
+#    - zip
+win:
+  icon: build/icons/windows/Icon.ico
+  target:
+    - nsis
