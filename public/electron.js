@@ -2,6 +2,8 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const path = require('path')
 const isDev = require("electron-is-dev");
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log')
 const walk = require('walk');
 const { ImagePool } = require('@squoosh/lib');
 const { cpus } = require('os');
