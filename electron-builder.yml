@@ -1,5 +1,5 @@
 appId: com.custhome.app
-productName: Crush
+productName: Lightn
 copyright: Copyright © 2021 ${author}
 directories:
   output: release/${version}

@@ -21,7 +21,7 @@ function createWindow() {
         width: 1000,
         height: 600,
         titleBarStyle: 'hiddenInset',
-        title: "Crush",
+        title: "Lightn",
         icon: path.join(__dirname, '../public/icons/macOS/Icon.icns'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
