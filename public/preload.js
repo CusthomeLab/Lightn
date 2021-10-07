@@ -45,7 +45,6 @@ ipcRenderer.on("electron:file-processed", function (event, process) {
 });
 
 ipcRenderer.on("electron:picture-setting-info", function (event, info) {
-  console.log(info);
   window.postMessage({
     type: "electron:picture-setting-info",
     info: info,

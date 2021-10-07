@@ -179,7 +179,6 @@ app.on("window-all-closed", function () {
 const addPictures = (paths) => {
   const inputDir = paths;
   total = 0;
-  console.log(path.dirname(inputDir[0]))
   mainWindow.webContents.send("electron:import-dir-selected", path.dirname(inputDir[0]));
 
   inputDir.forEach((pathUrl) => {
