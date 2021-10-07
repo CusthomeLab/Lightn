@@ -1,0 +1,26 @@
+{
+  "extends": ["react-app"],
+  "rules": {
+    "camelcase": [
+      "error",
+      {
+        "properties": "never"
+      }
+    ],
+    "curly": ["error", "all"],
+    "react/jsx-fragments": ["error", "element"],
+    "react/jsx-handler-names": "off",
+    "react/prop-types": "off",
+    "import/no-anonymous-default-export": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "16.11",
+      "flowVersion": "0.112"
+    }
+  },
+  "env": {
+    "browser": true,
+    "jest": true
+  }
+}

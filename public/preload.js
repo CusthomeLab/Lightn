@@ -1,50 +1,53 @@
-const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require("electron");
 
-process.once('loaded', () => {
-  window.addEventListener('message', evt => {
-    if (evt.data.type === 'app:input-dir-clicked') {
-      ipcRenderer.send('app:input-dir-clicked')
+process.once("loaded", () => {
+  window.addEventListener("message", (evt) => {
+    if (evt.data.type === "app:input-dir-clicked") {
+      ipcRenderer.send("app:input-dir-clicked");
     }
-    if (evt.data.type === 'app:export-dir-clicked') {
-      ipcRenderer.send('app:export-dir-clicked', evt.data.config)
+    if (evt.data.type === "app:export-dir-clicked") {
+      ipcRenderer.send("app:export-dir-clicked", evt.data.config);
     }
-    if (evt.data.type === 'app:picture-setting-updated') {
-      ipcRenderer.send('app:picture-setting-updated', evt.data.picture)
+    if (evt.data.type === "app:picture-setting-updated") {
+      ipcRenderer.send("app:picture-setting-updated", evt.data.picture);
     }
-  })
-})
+    if (evt.data.type === "app:input-files-dropped") {
+      ipcRenderer.send("app:input-files-dropped", evt.data.path);
+    }
+  });
+});
 
-ipcRenderer.on('electron:reset', function (event, arg) {
+ipcRenderer.on("electron:reset", function (event, arg) {
   window.postMessage({
-    type: 'electron:reset',
-  })
-})
+    type: "electron:reset",
+  });
+});
 
-ipcRenderer.on('electron:picture-added', function (event, picture) {
+ipcRenderer.on("electron:picture-added", function (event, picture) {
   window.postMessage({
-    type: 'electron:picture-added',
-    picture: picture
-  })
-})
+    type: "electron:picture-added",
+    picture: picture,
+  });
+});
 
-ipcRenderer.on('electron:import-dir-selected', function (event, path) {
+ipcRenderer.on("electron:import-dir-selected", function (event, path) {
   window.postMessage({
-    type: 'electron:import-dir-selected',
-    path: path
-  })
-})
+    type: "electron:import-dir-selected",
+    path: path,
+  });
+});
 
-ipcRenderer.on('electron:file-processed', function (event, process) {
+ipcRenderer.on("electron:file-processed", function (event, process) {
   window.postMessage({
-    type: 'electron:file-processed',
-    process: process
-  })
-})
+    type: "electron:file-processed",
+    process: process,
+  });
+});
 
-ipcRenderer.on('electron:picture-setting-info', function (event, info) {
-  console.log(info)
+ipcRenderer.on("electron:picture-setting-info", function (event, info) {
+  console.log(info);
   window.postMessage({
-    type: 'electron:picture-setting-info',
-    info: info
-  })
-})
+    type: "electron:picture-setting-info",
+    info: info,
+  });
+});

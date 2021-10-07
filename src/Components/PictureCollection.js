@@ -1,24 +1,24 @@
-import {observer} from "mobx-react-lite"
+import { observer } from "mobx-react-lite";
 import PictureItem from "./PictureItem";
-import {HumanFileSize} from "../HumanFileSize"
+import styled from "styled-components";
 
-export default observer(({store}) => {
-    return (
-        <div>
-            <div>
-                {store.getPictures().length > 0 && (
-                    <div>
-                        Original size: {HumanFileSize.format(store.getTotalSize())}<br/>
-                        Compressed size: {HumanFileSize.format(store.getNewTotalSize())}
-                    </div>
-                )
-                }
-            </div>
-            {
-                store.getPictures().map((picture, i) => {
-                    return (<PictureItem key={picture.path} path={picture.path} store={store}/>)
-                })
-            }
-        </div>
-    )
-})
+const Container = styled.div`
+  margin-top: 32px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+export default observer(({ store }) => {
+  return (
+    <Container>
+      {store.getPictures().map((picture, i) => {
+        return (
+          <PictureItem key={picture.path} path={picture.path} store={store} />
+        );
+      })}
+    </Container>
+  );
+});
