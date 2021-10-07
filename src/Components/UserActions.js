@@ -127,7 +127,7 @@ export default () => {
           }}
         />
         <Title>Click or drag files or folder to this area to upload</Title>
-        <Description>Support .jpg</Description>
+        <Description>Support .png .jpg</Description>
       </DashedBox>
     </Container>
   );

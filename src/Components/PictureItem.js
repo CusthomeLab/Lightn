@@ -198,6 +198,7 @@ export default observer(({ store, path }) => {
         <Input
           placeholder="quality"
           size="small"
+          disabled={picture.name.match(/\.png$/i)}
           suffix={
             <Checkbox
               checked={!picture.ignore}

@@ -66,15 +66,16 @@ export default observer(({ store }) => {
 
   React.useEffect(() => {
     if (
-      store.getCurrentProcess() &&
-      store.getCurrentProcess().done !== store.getCurrentProcess().total
+      (store.getCurrentProcess() &&
+        store.getCurrentProcess().done !== store.getCurrentProcess().total) ||
+      store.isImporting
     ) {
       setLoading(true);
     } else {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.getCurrentProcess()]);
+  }, [store.getCurrentProcess(), store.isImporting]);
 
   const openExportDirClicked = () => {
     window.postMessage({

@@ -30,10 +30,16 @@ ipcRenderer.on("electron:picture-added", function (event, picture) {
   });
 });
 
-ipcRenderer.on("electron:import-dir-selected", function (event, path) {
+ipcRenderer.on("electron:import-dir-selected", function (event, paths) {
   window.postMessage({
     type: "electron:import-dir-selected",
-    path: path,
+    paths: paths,
+  });
+});
+
+ipcRenderer.on("electron:import-finished", function (event) {
+  window.postMessage({
+    type: "electron:import-finished",
   });
 });
 

@@ -137,9 +137,13 @@ async function compressAndResize(path, newWidth, newHeight, quality, ignore) {
     mozjpeg: {
       quality: quality,
     },
+    oxipng: {},
   };
   await img.encode(encodeOptions);
-  let encoded = await img.encodedWith.mozjpeg;
+  const encoded = path.match(/\.png$/i)
+    ? await img.encodedWith.oxipng
+    : await img.encodedWith.mozjpeg;
+
   return {
     width: width,
     height: height,
@@ -179,12 +183,12 @@ app.on("window-all-closed", function () {
 const addPictures = (paths) => {
   const inputDir = paths;
   total = 0;
-  mainWindow.webContents.send("electron:import-dir-selected", path.dirname(inputDir[0]));
+  mainWindow.webContents.send("electron:import-dir-selected", inputDir);
 
   inputDir.forEach((pathUrl) => {
     const walker = walk.walk(pathUrl);
     walker.on("file", async (root, fileStats, next) => {
-      if (fileStats.name.match(/\.jpe?g$/i)) {
+      if (fileStats.name.match(/\.(jpe?g|png)$/i)) {
         const absolutePath = path.join(root, fileStats.name);
         const relativePath = path.join(
           root.replace(inputDir, ""),
@@ -211,8 +215,13 @@ const addPictures = (paths) => {
           newBase64: pictureInfo.newBase64,
         });
       }
-      total++;
+      if (!fileStats.name.match(/\.DS_Store$/i)) {
+        total++;
+      }
       next();
+    });
+    walker.on("end", () => {
+      mainWindow.webContents.send("electron:import-finished");
     });
   });
 };
@@ -256,47 +265,54 @@ ipcMain.on("app:export-dir-clicked", async (event, config) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ["openDirectory"],
   });
-  let exportDir = result.filePaths[0];
-  let importDir = config.importDir;
-  let pictures = config.pictures;
+  const exportDir = result.filePaths[0];
+  const importDir = config.importDir;
+  const pictures = config.pictures;
   let done = 0;
 
-  let walker = walk.walk(importDir);
-  walker.on("file", async function (root, fileStats, next) {
-    let absolutePath = path.join(root, fileStats.name);
-    let relativePath = path.join(root.replace(importDir, ""), fileStats.name);
-    let targetPath = path.join(exportDir, relativePath);
-    let targetDir = path.dirname(targetPath);
-    fs.mkdirSync(targetDir, { recursive: true });
-    let picture = pictures.find(
-      (picture) => picture.path === path.join(root, fileStats.name)
-    );
-    if (picture && !picture.ignore) {
-      let pictureInfo = await compressAndResize(
-        absolutePath,
-        picture.newWidth,
-        picture.newHeight,
-        picture.quality,
-        picture.ignore
+  importDir.forEach((pathUrl) => {
+    const walker = walk.walk(pathUrl);
+    walker.on("file", async (root, fileStats, next) => {
+      if (fileStats.name.match(/\.DS_Store$/i)) {
+        next();
+        return;
+      }
+      const dirname = path.extname(pathUrl) ? path.dirname(pathUrl) : pathUrl;
+      let absolutePath = path.join(root, fileStats.name);
+      let relativePath = path.join(root.replace(dirname, ""), fileStats.name);
+      let targetPath = path.join(exportDir, relativePath);
+      let targetDir = path.dirname(targetPath);
+      fs.mkdirSync(targetDir, { recursive: true });
+      let picture = pictures.find(
+        (picture) => picture.path === path.join(root, fileStats.name)
       );
-      let rawEncodedImage = pictureInfo.newFile;
-      await fs.promises.writeFile(targetPath, rawEncodedImage);
+      if (picture && !picture.ignore) {
+        let pictureInfo = await compressAndResize(
+          absolutePath,
+          picture.newWidth,
+          picture.newHeight,
+          picture.quality,
+          picture.ignore
+        );
+        let rawEncodedImage = pictureInfo.newFile;
+        await fs.promises.writeFile(targetPath, rawEncodedImage);
+        mainWindow.webContents.send("electron:file-processed", {
+          file: fileStats.name,
+          action: "compress",
+          done: ++done,
+          total: total,
+        });
+        next();
+        return;
+      }
+      await fs.promises.copyFile(absolutePath, targetPath);
       mainWindow.webContents.send("electron:file-processed", {
         file: fileStats.name,
-        action: "compress",
+        action: "copy",
         done: ++done,
         total: total,
       });
       next();
-      return;
-    }
-    await fs.promises.copyFile(absolutePath, targetPath);
-    mainWindow.webContents.send("electron:file-processed", {
-      file: fileStats.name,
-      action: "copy",
-      done: ++done,
-      total: total,
     });
-    next();
   });
 });

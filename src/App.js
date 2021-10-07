@@ -20,20 +20,31 @@ export default observer(() => {
         "/" +
         store.getCurrentProcess().total +
         ")";
-      message.loading({ content: contentMessage, key: "updatable" });
+      message.loading({ content: contentMessage, key: "export" });
     } else if (
       store.getCurrentProcess() &&
       store.getCurrentProcess().done === store.getCurrentProcess().total
     ) {
       message.success({
         content: "Exported with success!",
-        key: "updatable",
+        key: "export",
         duration: 2,
       });
       store.reset();
+    } else if (store.isImporting) {
+      message.loading({
+        content: "Files are being uploaded please wait...",
+        key: "import",
+      });
+    } else if (!store.isImporting && store.getPictures().length > 0) {
+      message.success({
+        content: "Uploaded with success!",
+        key: "import",
+        duration: 2,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.getCurrentProcess()]);
+  }, [store.getCurrentProcess(), store.isImporting]);
 
   return (
     <React.Fragment>

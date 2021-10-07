@@ -5,6 +5,7 @@ export class PictureStore {
   importDir = null;
   pictures = [];
   currentProcess = null;
+  isImporting = false;
 
   constructor() {
     makeAutoObservable(this, {
@@ -14,6 +15,10 @@ export class PictureStore {
 
   setImportDir(value) {
     this.importDir = value;
+  }
+
+  setIsImporting(value) {
+    this.isImporting = value;
   }
 
   addPicture(
@@ -79,11 +84,12 @@ export class PictureStore {
     this.importDir = null;
     this.pictures = [];
     this.currentProcess = null;
+    this.isImporting = false;
   }
 
   toJson() {
     return {
-      importDir: this.importDir,
+      importDir: this.importDir.map((path) => path),
       pictures: this.pictures.map((picture, i) => picture.toJson()),
     };
   }
@@ -121,7 +127,11 @@ window.addEventListener("message", (evt) => {
     store.reset();
   }
   if (evt.data.type === "electron:import-dir-selected") {
-    store.setImportDir(evt.data.path);
+    store.setIsImporting(true);
+    store.setImportDir(evt.data.paths);
+  }
+  if (evt.data.type === "electron:import-finished") {
+    store.setIsImporting(false);
   }
   if (evt.data.type === "electron:file-processed") {
     store.updateCurrentProcess(
