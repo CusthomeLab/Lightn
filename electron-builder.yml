@@ -10,6 +10,7 @@ mac:
   target:
     - dmg
 #    - zip
+  asar: false
 win:
   icon: build/icons/windows/Icon.ico
   target:
