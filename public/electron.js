@@ -37,10 +37,10 @@ function createWindow() {
   const startUrl = isDev
     ? "http://localhost:3000"
     : url.format({
-        pathname: path.join(__dirname, "/../build/index.html"),
-        protocol: "file:",
-        slashes: true,
-      });
+      pathname: path.join(__dirname, "/../build/index.html"),
+      protocol: "file:",
+      slashes: true,
+    });
   mainWindow.loadURL(startUrl);
 
   // Open the DevTools.
@@ -65,16 +65,16 @@ function sendStatusToWindow(text) {
 autoUpdater.on("checking-for-update", () => {
   sendStatusToWindow("Checking for update...");
 });
-autoUpdater.on("update-available", (ev, info) => {
+autoUpdater.on("update-available", (info) => {
   sendStatusToWindow("Update available.");
 });
-autoUpdater.on("update-not-available", (ev, info) => {
+autoUpdater.on("update-not-available", (info) => {
   sendStatusToWindow("Update not available.");
 });
-autoUpdater.on("error", (ev, err) => {
+autoUpdater.on("error", (err) => {
   sendStatusToWindow("Error in auto-updater. " + err);
 });
-autoUpdater.on("download-progress", (ev, progressObj) => {
+autoUpdater.on("download-progress", (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
   log_message =
     log_message + " - Downloaded " + Math.round(progressObj.percent) + "%";
@@ -87,7 +87,7 @@ autoUpdater.on("download-progress", (ev, progressObj) => {
     ")";
   sendStatusToWindow(log_message);
 });
-autoUpdater.on("update-downloaded", (ev, info) => {
+autoUpdater.on("update-downloaded", (info) => {
   sendStatusToWindow("Update downloaded");
 });
 
