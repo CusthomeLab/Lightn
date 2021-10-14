@@ -68,14 +68,15 @@ export default observer(({ store }) => {
     if (
       (store.getCurrentProcess() &&
         store.getCurrentProcess().done !== store.getCurrentProcess().total) ||
-      store.isImporting
+      store.isImporting ||
+      store.onePictureLoading()
     ) {
       setLoading(true);
     } else {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.getCurrentProcess(), store.isImporting]);
+  }, [store.getCurrentProcess(), store.isImporting, store.onePictureLoading()]);
 
   const openExportDirClicked = () => {
     window.postMessage({
@@ -92,7 +93,7 @@ export default observer(({ store }) => {
         top: "0px",
         zIndex: 10,
         width: "100%",
-        padding: "12px 0",
+        padding: "20px 0",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",

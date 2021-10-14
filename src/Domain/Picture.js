@@ -13,6 +13,9 @@ export class Picture {
   base64 = null;
   quality = 85;
   ignore = false;
+  isLoading = false;
+  lastCompressedWidth = null;
+  lastCompressedQuality = 85;
 
   constructor(
     path,
@@ -42,6 +45,7 @@ export class Picture {
     this.newHeight = newHeight;
     this.newSize = newSize;
     this.newBase64 = newBase64;
+    this.lastCompressedWidth = newWidth;
   }
 
   toJson() {
@@ -51,22 +55,28 @@ export class Picture {
       name: this.name,
       newWidth: this.newWidth,
       newHeight: this.newHeight,
+      newBase64: this.newBase64,
       quality: this.quality,
       ignore: this.ignore,
     };
   }
 
-  updateSetting(newWidth, newHeight, quality, ignore) {
+  updateSetting(newWidth, newHeight, quality, ignore, processPicture) {
     this.newWidth = newWidth;
     this.newHeight = newHeight;
     this.quality = quality;
     this.ignore = ignore;
+    this.isLoading = processPicture;
   }
 
-  updateNewPictureInfo(newWidth, newHeight, newSize, newBase64) {
+  updateNewPictureInfo(newWidth, newHeight, newSize, newBase64, quality) {
     this.newWidth = newWidth;
     this.newHeight = newHeight;
     this.newSize = newSize;
     this.newBase64 = newBase64;
+    this.isLoading = false;
+    this.lastCompressedWidth = newWidth;
+    this.quality = quality;
+    this.lastCompressedQuality = quality;
   }
 }

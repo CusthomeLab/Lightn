@@ -63,21 +63,59 @@ export class PictureStore {
     return this.currentProcess;
   }
 
-  updatePictureSetting(path, newWidth, newHeight, quality, ignore) {
-    let picture = this.getPicture(path);
-    picture.updateSetting(newWidth, newHeight, quality, ignore);
+  onePictureLoading() {
+    return this.pictures.some((pic) => pic.isLoading);
+  }
 
-    if (newWidth > 0 && newHeight > 0 && quality > 0) {
+  numberPictureWithBigSize() {
+    return this.pictures.filter(
+      (pic) => pic.newWidth > 1024 || pic.newHeight > 1024
+    ).length;
+  }
+
+  updatePictureSetting(
+    path,
+    newWidth,
+    newHeight,
+    quality,
+    ignore,
+    processPicture = false
+  ) {
+    let picture = this.getPicture(path);
+    if (
+      newWidth &&
+      newHeight &&
+      quality &&
+      processPicture &&
+      (newWidth !== picture.lastCompressedWidth ||
+        quality !== picture.lastCompressedQuality) &&
+      !ignore
+    ) {
+      picture.updateSetting(
+        newWidth,
+        newHeight,
+        quality,
+        ignore,
+        processPicture
+      );
       window.postMessage({
         type: "app:picture-setting-updated",
         picture: picture,
       });
+    } else {
+      picture.updateSetting(newWidth, newHeight, quality, ignore, false);
     }
   }
 
-  updateNewPictureInfo(path, newWidth, newHeight, newSize, newBase64) {
+  updateNewPictureInfo(path, newWidth, newHeight, newSize, newBase64, quality) {
     let picture = this.getPicture(path);
-    picture.updateNewPictureInfo(newWidth, newHeight, newSize, newBase64);
+    picture.updateNewPictureInfo(
+      newWidth,
+      newHeight,
+      newSize,
+      newBase64,
+      quality
+    );
   }
 
   reset() {
@@ -127,7 +165,7 @@ window.addEventListener("message", (evt) => {
     store.reset();
   }
   if (evt.data.type === "electron:import-dir-selected") {
-    store.setIsImporting(true);
+    evt.data.paths.length !== 0 && store.setIsImporting(true);
     store.setImportDir(evt.data.paths);
   }
   if (evt.data.type === "electron:import-finished") {
@@ -165,7 +203,8 @@ window.addEventListener("message", (evt) => {
       evt.data.info.newWidth,
       evt.data.info.newHeight,
       evt.data.info.newSize,
-      evt.data.info.newBase64
+      evt.data.info.newBase64,
+      evt.data.info.quality
     );
   }
 });

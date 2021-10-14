@@ -152,7 +152,6 @@ async function compressAndResize(path, newWidth, newHeight, quality, ignore) {
     newWidth: newWidth,
     newHeight: newHeight,
     newSize: encoded.size,
-    newFile: encoded.binary,
     newBase64: Buffer.from(encoded.binary).toString("base64"),
   };
 }
@@ -184,8 +183,10 @@ const addPictures = (paths) => {
   const inputDir = paths;
   total = 0;
   mainWindow.webContents.send("electron:import-dir-selected", inputDir);
+  let numberOfWalker = 0;
 
   inputDir.forEach((pathUrl) => {
+    numberOfWalker++;
     const walker = walk.walk(pathUrl);
     walker.on("file", async (root, fileStats, next) => {
       if (fileStats.name.match(/\.(jpe?g|png)$/i)) {
@@ -221,7 +222,10 @@ const addPictures = (paths) => {
       next();
     });
     walker.on("end", () => {
-      mainWindow.webContents.send("electron:import-finished");
+      numberOfWalker--;
+      if (numberOfWalker === 0) {
+        mainWindow.webContents.send("electron:import-finished");
+      }
     });
   });
 };
@@ -258,6 +262,7 @@ ipcMain.on("app:picture-setting-updated", async (event, picture) => {
     newHeight: pictureInfo.newHeight,
     newSize: pictureInfo.newSize,
     newBase64: pictureInfo.newBase64,
+    quality: picture.quality,
   });
 });
 
@@ -287,15 +292,8 @@ ipcMain.on("app:export-dir-clicked", async (event, config) => {
         (picture) => picture.path === path.join(root, fileStats.name)
       );
       if (picture && !picture.ignore) {
-        let pictureInfo = await compressAndResize(
-          absolutePath,
-          picture.newWidth,
-          picture.newHeight,
-          picture.quality,
-          picture.ignore
-        );
-        let rawEncodedImage = pictureInfo.newFile;
-        await fs.promises.writeFile(targetPath, rawEncodedImage);
+        const newFile = await Buffer.from(picture.newBase64, "base64");
+        await fs.promises.writeFile(targetPath, newFile);
         mainWindow.webContents.send("electron:file-processed", {
           file: fileStats.name,
           action: "compress",
