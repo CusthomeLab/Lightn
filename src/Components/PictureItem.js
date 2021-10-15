@@ -233,8 +233,8 @@ export default observer(({ store, path, setImageSlider }) => {
         <ImageContainer
           onClick={() =>
             setImageSlider(
-              "data:image/jpeg;base64," + picture.base64,
-              "data:image/jpeg;base64," + picture.newBase64
+              "data:image/jpeg;base64," + picture.newBase64,
+              "data:image/jpeg;base64," + picture.base64
             )
           }
         >
