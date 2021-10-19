@@ -1,9 +1,9 @@
 appId: com.custhome.app
+asar: false
 productName: Lightn
 copyright: Copyright © 2021 ${author}
 directories:
   output: release/${version}
-asar: false
 mac:
   category: public.app-category.productivity
   icon: build/icons/macOS/Icon.icns

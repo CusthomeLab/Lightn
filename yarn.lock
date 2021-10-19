@@ -1746,7 +1746,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@squoosh/lib@*":
+"@squoosh/lib@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@squoosh/lib/-/lib-0.4.0.tgz#31d18cb082c69e404589e2e281414d10f91e1668"
   integrity sha512-O1LyugWLZjMI4JZeZMA5vzfhfPjfMZXH5/HmVkRagP8B70wH3uoR7tjxfGNdSavey357MwL8YJDxbGwBBdHp7Q==

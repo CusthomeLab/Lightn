@@ -39,7 +39,7 @@ export default observer(() => {
       store.getCurrentProcess().done !== store.getCurrentProcess().total
     ) {
       const contentMessage =
-        store.getCurrentProcess().action +
+        store.getCurrentProcess().action + " " +
         store.getCurrentProcess().file +
         "(" +
         store.getCurrentProcess().done +
