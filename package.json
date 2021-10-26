@@ -1,9 +1,13 @@
 {
   "name": "lightn",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "author": "Custhome",
   "description": "Custhome picture / modelisation optimisation with squoosh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CusthomeLab/Lightn.git"
+  },
   "main": "./public/electron.js",
   "homepage": "./",
   "dependencies": {

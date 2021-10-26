@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, dialog, ipcMain} = require("electron")
+const { app, BrowserWindow, dialog, ipcMain } = require("electron")
 const path = require("path")
 const isDev = require("electron-is-dev")
-const {autoUpdater} = require("electron-updater")
+const { autoUpdater } = require("electron-updater")
 const log = require("electron-log")
 const walk = require("walk")
-const {ImagePool} = require("@squoosh/lib")
-const {cpus} = require("os")
+const { ImagePool } = require("@squoosh/lib")
+const { cpus } = require("os")
 const fs = require("fs")
 const url = require("url")
 
@@ -22,7 +22,7 @@ function createWindow() {
         height: 600,
         titleBarStyle: "hiddenInset",
         title: "Lightn",
-        icon: path.join(__dirname, "../public/icons/macOS/Icon.icns"),
+        icon: path.join(__dirname, "../public/icons/macOS/icon.icns"),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: false,
@@ -311,7 +311,7 @@ ipcMain.on("app:export-dir-clicked", async (event, config) => {
             let relativePath = path.join(root.replace(dirname, ""), fileStats.name)
             let targetPath = path.join(exportDir, relativePath)
             let targetDir = path.dirname(targetPath)
-            fs.mkdirSync(targetDir, {recursive: true})
+            fs.mkdirSync(targetDir, { recursive: true })
             let picture = pictures.find(
                 (picture) => picture.path === path.join(root, fileStats.name)
             )

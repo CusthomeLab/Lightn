@@ -6,12 +6,12 @@ directories:
   output: release/${version}
 mac:
   category: public.app-category.productivity
-  icon: build/icons/macOS/Icon.icns
+  icon: build/icons/macOS/icon.icns
   darkModeSupport: true
   target:
     - dmg
 #    - zip
 win:
-  icon: build/icons/windows/Icon.ico
+  icon: build/icons/windows/icon.ico
   target:
     - nsis
