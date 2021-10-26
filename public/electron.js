@@ -303,15 +303,24 @@ ipcMain.on("app:export-dir-clicked", async (event, config) => {
     const pictures = config.pictures
     let done = 0
 
+    const keepDirname = importDir.length > 1
+
     importDir.forEach((pathUrl) => {
         const walker = walk.walk(pathUrl)
         walker.on("file", async (root, fileStats, next) => {
             const dirname = path.extname(pathUrl) ? path.dirname(pathUrl) : pathUrl
+            console.info('dirname', dirname)
+            const prefix = keepDirname ? path.basename(dirname) : ''
+            console.info('prefix', prefix)
             let absolutePath = path.join(root, fileStats.name)
+            console.info('absolutePath', absolutePath)
             let relativePath = path.join(root.replace(dirname, ""), fileStats.name)
-            let targetPath = path.join(exportDir, relativePath)
+            console.info('relativePath', relativePath)
+            let targetPath = path.join(exportDir, prefix, relativePath)
+            console.info('targetPath', targetPath)
             let targetDir = path.dirname(targetPath)
-            fs.mkdirSync(targetDir, { recursive: true })
+            console.info('targetDir', targetDir)
+            fs.mkdirSync(targetDir, {recursive: true})
             let picture = pictures.find(
                 (picture) => picture.path === path.join(root, fileStats.name)
             )
