@@ -37,7 +37,7 @@
     "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electronmon .\"",
     "electron:pack:test": "yarn build && DEBUG=electron-builder electron-builder --dir",
     "electron:pack": "yarn build && electron-builder --x64 --macos --win",
-    "electron:release": "yarn build && electron-builder --x64 --macos --win --publish onTag"
+    "electron:release": "yarn build && electron-builder --x64 --macos --win -p always"
   },
   "eslintConfig": {
     "extends": [
