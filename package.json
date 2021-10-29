@@ -1,7 +1,7 @@
 {
   "name": "lightn",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "author": "Custhome",
   "description": "Custhome picture / modelisation optimisation with squoosh",
   "repository": {
