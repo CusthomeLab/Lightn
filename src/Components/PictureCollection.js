@@ -5,7 +5,7 @@ import PictureItem from "./PictureItem";
 import styled from "styled-components";
 
 const Container = styled.div`
-  padding-top: 48px;
+  padding-top: 72px;
   display: flex;
   flex-direction: row;
   align-content: center;

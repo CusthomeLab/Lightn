@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Lightn from "./Lightn";
 import { HumanFileSize } from "../HumanFileSize";
 const { Header } = Layout;
+const appVersion = process.env.REACT_APP_VERSION;
 
 const Logo = styled.div`
   display: flex;
@@ -93,18 +94,19 @@ export default observer(({ store }) => {
         top: "0px",
         zIndex: 10,
         width: "100%",
-        padding: "20px 0",
+        padding: "32px 0",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         background: "#333333",
         backdropFilter: "blur(6px)",
         backgroundColor: "rgba(51, 51, 51, 0.5)",
+        "-webkit-app-region": "drag",
       }}
     >
       <Logo>
         <Lightn />
-        <Version>0.1.0</Version>
+        <Version>v{appVersion}</Version>
       </Logo>
       {store.getTotalSize() ? (
         <Infos>
